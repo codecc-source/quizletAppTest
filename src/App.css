@@ -24,6 +24,10 @@
 }
 
 .quizlet-container {
+  background: rgba(165, 24, 207, 0.5); 
+  backdrop-filter: blur(20px); 
+  border-radius: 10px; 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
@@ -59,4 +63,7 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+body {
+  background: #432450;
 }

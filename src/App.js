@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function App() {
   const [quizData, setQuizData] = useState(null);
 
@@ -11,7 +19,7 @@ function App() {
     reader.onload = (e) => {
       const content = e.target.result;
       const jsonData = JSON.parse(content);
-      setQuizData(jsonData);
+      setQuizData(shuffleArray(jsonData)); // Shuffle the questions
     };
 
     reader.readAsText(file);
@@ -26,7 +34,7 @@ function App() {
       {!quizData ? (
         <FileUploader onFileUpload={handleFileUpload} />
       ) : (
-        <Quizlet quizData={quizData} onRedoQuiz={handleRedoQuiz} />
+        <Quizlet quizData={quizData} onRedoQuiz={handleRedoQuiz} onCancelQuiz={() => setQuizData(null)} />
       )}
     </div>
   );
@@ -41,7 +49,7 @@ function FileUploader({ onFileUpload }) {
   );
 }
 
-function Quizlet({ quizData, onRedoQuiz }) {
+function Quizlet({ quizData, onRedoQuiz, onCancelQuiz }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
@@ -59,10 +67,11 @@ function Quizlet({ quizData, onRedoQuiz }) {
 
   return (
     <div className="quizlet-container">
-      <h2>Quiz</h2>
+      <h2 style={{color: 'white'}}>Quiz</h2>
       {currentQuestionIndex < quizData.length ? (
         <div className="quizlet">
-          <div className="question">{quizData[currentQuestionIndex].question}</div>
+          <div style={{color: 'white'}} className="question">{quizData[currentQuestionIndex].question}</div>
+          <br/>
           <input
             type="text"
             value={userAnswer}
@@ -70,14 +79,14 @@ function Quizlet({ quizData, onRedoQuiz }) {
             placeholder="Your answer"
           />
           <button onClick={handleSubmitAnswer}>Submit Answer</button>
-          <a>score: {score}</a>
+          <button onClick={onCancelQuiz}>Cancel Quiz</button>
+          <a style={{color: 'white'}}>score: {score}</a>
         </div>
       ) : (
         <div className="quizlet">
-          <h3>Quiz Completed</h3>
-          <p>Your score: {score}/{quizData.length}</p>
-          <button onClick={onRedoQuiz}>Redo Quiz</button>
-          <button onClick={() => onRedoQuiz()}>Upload Different note/JSON</button>
+          <h3 style={{color: 'white'}}>Quiz Completed</h3>
+          <p style={{color: 'white'}}>Your score: {score}/{quizData.length}</p>
+          <button onClick={onRedoQuiz}>Redo Quiz / Upload Different file</button>
         </div>
       )}
     </div>
